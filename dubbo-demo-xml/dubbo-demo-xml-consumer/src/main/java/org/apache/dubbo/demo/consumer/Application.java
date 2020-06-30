@@ -18,14 +18,13 @@ package org.apache.dubbo.demo.consumer;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.dubbo.demo.DemoService;
-
-import org.apache.dubbo.rpc.RpcContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -58,11 +57,11 @@ public class Application {
 //        demoService.sayHello("world2");
 //        Future<String> world2 = RpcContext.getContext().getFuture();
 
-        CompletableFuture<Void> hello = within(demoService.sayHelloAsync("world"), Duration.ofMillis(500))
+        CompletableFuture<Void> hello = within(demoService.sayHelloAsync("world"), Duration.ofMillis(5000))
                 .thenAccept(Application::s)
                 .exceptionally(degrade());
 
-        CompletableFuture<Void> world = within(CompletableFuture.supplyAsync(() -> demoService.sayHello("world")), Duration.ofMillis(500))
+        CompletableFuture<Void> world = within(CompletableFuture.supplyAsync(() -> demoService.sayHello("world")), Duration.ofMillis(5000))
                 .thenAccept(Application::s)
                 .exceptionally(degrade());
 
